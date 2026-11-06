@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/customer.dart';
 import '../theme/app_theme.dart';
+import 'status_badge.dart';
 
 class CustomerCard extends StatelessWidget {
   const CustomerCard({
@@ -17,97 +18,150 @@ class CustomerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 10, 8),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Text(
-                    customer.nama.toUpperCase(),
-                    style: const TextStyle(
-                      color: AppColors.ink,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0.1,
-                    ),
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        boxShadow: AppShadows.card,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(
+                  customer.nama,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTypography.headlineSm.copyWith(
+                    color: AppColors.onSurface,
                   ),
                 ),
-                const SizedBox(width: 12),
-                Text(
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              StatusBadge(status: customer.status),
+            ],
+          ),
+          const SizedBox(height: 7),
+          Row(
+            children: [
+              Text(
+                'ID:',
+                style: AppTypography.labelSm.copyWith(
+                  color: AppColors.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Expanded(
+                child: Text(
                   customer.idpel,
-                  textAlign: TextAlign.right,
-                  style: const TextStyle(
-                    color: AppColors.muted,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.3,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTypography.codeData.copyWith(
+                    color: AppColors.secondary,
                   ),
                 ),
-              ],
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Text(
+                '${customer.tarif} / ${customer.daya} VA',
+                style: AppTypography.bodySm.copyWith(
+                  color: AppColors.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 9),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            decoration: BoxDecoration(
+              color: AppColors.surfaceContainerLow,
+              borderRadius: BorderRadius.circular(AppRadius.sm),
             ),
-            const SizedBox(height: 6),
-            Row(
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Padding(
-                  padding: EdgeInsets.only(top: 2),
-                  child: Icon(
-                    Icons.place_outlined,
-                    size: 15,
-                    color: AppColors.muted,
-                  ),
+                const Icon(
+                  Icons.place_outlined,
+                  size: 16,
+                  color: AppColors.secondary,
                 ),
-                const SizedBox(width: 5),
+                const SizedBox(width: 6),
                 Expanded(
                   child: Text(
                     customer.alamat,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: AppColors.muted,
-                      fontSize: 12.5,
-                      height: 1.4,
+                    style: AppTypography.bodySm.copyWith(
+                      color: AppColors.onSurfaceVariant,
+                      height: 1.45,
                     ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 2),
-            Row(
-              children: [
-                const Spacer(),
-                IconButton(
-                  tooltip: 'Edit inspeksi',
-                  onPressed: onEdit,
-                  icon: const Icon(Icons.edit, size: 20),
-                  color: AppColors.toskaDark,
-                  style: IconButton.styleFrom(
-                    backgroundColor: AppColors.toskaTint,
-                    minimumSize: const Size(38, 38),
-                    padding: EdgeInsets.zero,
+          ),
+          const SizedBox(height: 9),
+          Row(
+            children: [
+              Text(
+                'No. Seri Meter:',
+                style: AppTypography.bodySm.copyWith(
+                  color: AppColors.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Text(
+                  customer.nomorMeter,
+                  textAlign: TextAlign.right,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTypography.codeData.copyWith(
+                    color: AppColors.onSurface,
                   ),
                 ),
-                const SizedBox(width: 6),
-                IconButton(
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Row(
+            children: [
+              Expanded(
+                child: FilledButton.icon(
+                  onPressed: onEdit,
+                  style: FilledButton.styleFrom(
+                    backgroundColor: AppColors.secondary,
+                    foregroundColor: AppColors.onSecondary,
+                  ),
+                  icon: const Icon(Icons.assignment_outlined, size: 18),
+                  label: const Text('Buka Form Inspeksi'),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              SizedBox(
+                width: 48,
+                height: 48,
+                child: IconButton(
                   tooltip: 'Lihat peta',
                   onPressed: onViewMap,
-                  icon: const Icon(Icons.location_on_outlined, size: 21),
-                  color: AppColors.toskaDark,
                   style: IconButton.styleFrom(
-                    backgroundColor: AppColors.canvas,
-                    minimumSize: const Size(38, 38),
-                    padding: EdgeInsets.zero,
+                    backgroundColor: AppColors.secondary,
+                    foregroundColor: AppColors.onSecondary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(AppRadius.sm),
+                    ),
                   ),
+                  icon: const Icon(Icons.location_on_outlined, size: 22),
                 ),
-              ],
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

@@ -9,63 +9,75 @@ class FormSectionCard extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.children,
+    this.badge,
   });
 
   final IconData icon;
   final String title;
   final String subtitle;
   final List<Widget> children;
+  final Widget? badge;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        boxShadow: AppShadows.card,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
+            padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    color: AppColors.toskaTint,
-                    borderRadius: BorderRadius.circular(11),
+                    color: AppColors.secondaryFixed,
+                    borderRadius: BorderRadius.circular(AppRadius.md),
                   ),
-                  child: Icon(icon, color: AppColors.toskaDark, size: 21),
+                  child: Icon(icon, color: AppColors.secondary, size: 21),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpacing.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         title,
-                        style: const TextStyle(
-                          color: AppColors.ink,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w800,
+                        style: AppTypography.headlineSm.copyWith(
+                          color: AppColors.onSurface,
                         ),
                       ),
                       const SizedBox(height: 2),
                       Text(
                         subtitle,
-                        style: const TextStyle(
-                          color: AppColors.muted,
-                          fontSize: 11.5,
-                          height: 1.3,
+                        style: AppTypography.bodySm.copyWith(
+                          color: AppColors.onSurfaceVariant,
+                          height: 1.35,
                         ),
                       ),
                     ],
                   ),
                 ),
+                if (badge != null) ...[
+                  const SizedBox(width: AppSpacing.sm),
+                  badge!,
+                ],
               ],
             ),
           ),
-          const Divider(),
+          Divider(
+            height: 1,
+            color: AppColors.outlineVariant.withValues(alpha: 0.5),
+          ),
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(14),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -104,18 +116,15 @@ class RequiredFieldLabel extends StatelessWidget {
             children: [
               TextSpan(
                 text: label,
-                style: const TextStyle(
-                  color: AppColors.ink,
-                  fontSize: 13.5,
-                  fontWeight: FontWeight.w700,
+                style: AppTypography.labelMd.copyWith(
+                  color: AppColors.onSurfaceVariant,
                 ),
               ),
               if (required)
-                const TextSpan(
+                TextSpan(
                   text: ' *',
-                  style: TextStyle(
-                    color: AppColors.danger,
-                    fontWeight: FontWeight.w800,
+                  style: AppTypography.labelMd.copyWith(
+                    color: AppColors.error,
                   ),
                 ),
             ],
@@ -125,13 +134,52 @@ class RequiredFieldLabel extends StatelessWidget {
           const SizedBox(height: 3),
           Text(
             helper!,
-            style: const TextStyle(
-              color: AppColors.muted,
-              fontSize: 11.5,
+            style: AppTypography.bodySm.copyWith(
+              color: AppColors.onSurfaceVariant,
               height: 1.35,
             ),
           ),
         ],
+      ],
+    );
+  }
+}
+
+/// A read-only system value row used inside the locked customer card.
+class ReadOnlyValueRow extends StatelessWidget {
+  const ReadOnlyValueRow({
+    super.key,
+    required this.label,
+    required this.value,
+    this.code = false,
+  });
+
+  final String label;
+  final String value;
+  final bool code;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: AppTypography.labelSm.copyWith(
+            color: AppColors.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: 3),
+        Text(
+          value,
+          style: code
+              ? AppTypography.codeData.copyWith(color: AppColors.onSurface)
+              : AppTypography.bodyMd.copyWith(
+                  color: AppColors.onSurface,
+                  fontWeight: FontWeight.w600,
+                  fontVariations: const [FontVariation('wght', 600)],
+                ),
+        ),
       ],
     );
   }

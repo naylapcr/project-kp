@@ -6,6 +6,7 @@ import '../screens/customer_map_screen.dart';
 import '../screens/inspection_form_screen.dart';
 import '../screens/monitoring_screen.dart';
 import '../theme/app_theme.dart';
+import '../widgets/app_bottom_nav.dart';
 
 class HomeShell extends StatefulWidget {
   const HomeShell({super.key});
@@ -30,6 +31,16 @@ class _HomeShellState extends State<HomeShell> {
     );
 
     if (saved == true && mounted) {
+      setState(() {
+        final index = _customers.indexWhere(
+          (item) => item.idpel == customer.idpel,
+        );
+        if (index != -1) {
+          _customers[index] = _customers[index].copyWith(
+            status: CustomerStatus.completed,
+          );
+        }
+      });
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
         ..showSnackBar(
@@ -44,10 +55,6 @@ class _HomeShellState extends State<HomeShell> {
     final customer = await showModalBottomSheet<Customer>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppColors.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
-      ),
       builder: (sheetContext) {
         return _CustomerPickerSheet(customers: _customers);
       },
@@ -77,6 +84,7 @@ class _HomeShellState extends State<HomeShell> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.surface,
       body: IndexedStack(
         index: _selectedTab,
         children: [
@@ -84,7 +92,6 @@ class _HomeShellState extends State<HomeShell> {
             customers: _customers,
             onEdit: _openInspection,
             onViewMap: _showCustomerOnMap,
-            onAdd: _startNewInspection,
           ),
           _mapsOpened
               ? CustomerMapScreen(
@@ -96,21 +103,10 @@ class _HomeShellState extends State<HomeShell> {
               : const SizedBox.shrink(),
         ],
       ),
-      bottomNavigationBar: NavigationBar(
+      bottomNavigationBar: AppBottomNav(
         selectedIndex: _selectedTab,
-        onDestinationSelected: _onTabSelected,
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.contacts_outlined),
-            selectedIcon: Icon(Icons.contacts),
-            label: 'Monitoring',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.map_outlined),
-            selectedIcon: Icon(Icons.map),
-            label: 'Maps',
-          ),
-        ],
+        onSelected: _onTabSelected,
+        onInspection: _startNewInspection,
       ),
     );
   }
@@ -123,7 +119,8 @@ class _CustomerPickerSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final maxHeight = MediaQuery.sizeOf(context).height * 0.72;
+    final maxHeight = MediaQuery.sizeOf(context).height * 0.78;
+
     return SafeArea(
       top: false,
       child: ConstrainedBox(
@@ -136,31 +133,41 @@ class _CustomerPickerSheet extends StatelessWidget {
               width: 38,
               height: 4,
               decoration: BoxDecoration(
-                color: AppColors.border,
-                borderRadius: BorderRadius.circular(10),
+                color: AppColors.outlineVariant,
+                borderRadius: BorderRadius.circular(AppRadius.pill),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(20, 16, 20, 4),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.margin,
+                AppSpacing.margin,
+                AppSpacing.margin,
+                4,
+              ),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Buat inspeksi baru',
-                  style: TextStyle(
-                    color: AppColors.ink,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w800,
+                  'Buat Inspeksi Baru',
+                  style: AppTypography.headlineMd.copyWith(
+                    color: AppColors.onSurface,
                   ),
                 ),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 12),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.margin,
+                0,
+                AppSpacing.margin,
+                AppSpacing.md,
+              ),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Pilih pelanggan yang akan diperiksa.',
-                  style: TextStyle(color: AppColors.muted, fontSize: 12),
+                  'Pilih pelanggan yang akan diperiksa petugas.',
+                  style: AppTypography.bodySm.copyWith(
+                    color: AppColors.onSurfaceVariant,
+                  ),
                 ),
               ),
             ),
@@ -170,44 +177,74 @@ class _CustomerPickerSheet extends StatelessWidget {
                 shrinkWrap: true,
                 padding: const EdgeInsets.symmetric(vertical: 6),
                 itemCount: customers.length,
-                separatorBuilder: (_, _) =>
-                    const Divider(indent: 68, endIndent: 20),
+                separatorBuilder: (_, _) => const Divider(
+                  indent: 72,
+                  endIndent: AppSpacing.margin,
+                ),
                 itemBuilder: (context, index) {
                   final customer = customers[index];
-                  return ListTile(
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 2,
-                    ),
-                    leading: Container(
-                      width: 38,
-                      height: 38,
-                      decoration: BoxDecoration(
-                        color: AppColors.toskaTint,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Icon(
-                        Icons.person_outline,
-                        color: AppColors.toskaDark,
-                        size: 20,
-                      ),
-                    ),
-                    title: Text(
-                      customer.nama,
-                      style: const TextStyle(
-                        fontSize: 13.5,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    subtitle: Text(
-                      customer.idpel,
-                      style: const TextStyle(fontSize: 11.5),
-                    ),
-                    trailing: const Icon(
-                      Icons.chevron_right,
-                      color: AppColors.muted,
-                    ),
+                  return InkWell(
                     onTap: () => Navigator.of(context).pop(customer),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.margin,
+                        vertical: 10,
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 42,
+                            height: 42,
+                            decoration: BoxDecoration(
+                              color: AppColors.secondaryFixed,
+                              borderRadius: BorderRadius.circular(AppRadius.md),
+                            ),
+                            child: const Icon(
+                              Icons.person_outline,
+                              color: AppColors.secondary,
+                              size: 21,
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.md),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  customer.nama,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: AppTypography.labelLg.copyWith(
+                                    color: AppColors.onSurface,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  customer.idpel,
+                                  style: AppTypography.codeData.copyWith(
+                                    color: AppColors.secondary,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  customer.alamat,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: AppTypography.bodySm.copyWith(
+                                    color: AppColors.onSurfaceVariant,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          const Icon(
+                            Icons.chevron_right,
+                            color: AppColors.onSurfaceVariant,
+                          ),
+                        ],
+                      ),
+                    ),
                   );
                 },
               ),

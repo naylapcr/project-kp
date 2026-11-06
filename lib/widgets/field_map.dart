@@ -19,7 +19,7 @@ class MapPin {
     required this.position,
     required this.title,
     this.snippet,
-    this.color = AppColors.toska,
+    this.color = AppColors.secondary,
   });
 
   final String id;
@@ -88,12 +88,13 @@ class _FieldMapState extends State<FieldMap> {
           markerId: MarkerId(pin.id),
           position: pin.position,
           infoWindow: InfoWindow(title: pin.title, snippet: pin.snippet),
+          icon: BitmapDescriptor.defaultMarkerWithHue(_hueFor(pin.color)),
           onTap: widget.onPinTap == null ? null : () => widget.onPinTap!(pin),
         ),
     };
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(AppRadius.md),
       child: SizedBox(
         height: widget.height,
         width: double.infinity,
@@ -120,6 +121,13 @@ class _FieldMapState extends State<FieldMap> {
       ),
     );
   }
+
+  double _hueFor(Color color) {
+    if (color == AppColors.tertiary) return BitmapDescriptor.hueOrange;
+    if (color == AppColors.error) return BitmapDescriptor.hueRed;
+    if (color == AppColors.primary) return BitmapDescriptor.hueViolet;
+    return BitmapDescriptor.hueAzure;
+  }
 }
 
 /// A stylised map placeholder used when the native map SDK is unavailable.
@@ -143,12 +151,12 @@ class MapFallback extends StatelessWidget {
       height: height,
       width: double.infinity,
       clipBehavior: Clip.antiAlias,
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(14)),
-        gradient: LinearGradient(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFFE6F2EE), Color(0xFFD6E9E5)],
+          colors: [AppColors.secondaryFixed, AppColors.surfaceContainer],
         ),
       ),
       child: Stack(
@@ -164,19 +172,13 @@ class MapFallback extends StatelessWidget {
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(
-                    color: AppColors.surface,
+                    color: AppColors.surfaceContainerLowest,
                     shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.ink.withValues(alpha: 0.12),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
+                    boxShadow: AppShadows.card,
                   ),
-                  child: Icon(
-                    pins.length > 1 ? Icons.location_on : Icons.place_outlined,
-                    color: AppColors.toskaDark,
+                  child: const Icon(
+                    Icons.location_on,
+                    color: AppColors.secondary,
                     size: 26,
                   ),
                 ),
@@ -188,17 +190,17 @@ class MapFallback extends StatelessWidget {
                       vertical: 5,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.surface.withValues(alpha: 0.92),
-                      borderRadius: BorderRadius.circular(20),
+                      color: AppColors.surfaceContainerLowest.withValues(
+                        alpha: 0.94,
+                      ),
+                      borderRadius: BorderRadius.circular(AppRadius.lg),
                     ),
                     child: Text(
                       primaryPin.title,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: AppColors.ink,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
+                      style: AppTypography.labelSm.copyWith(
+                        color: AppColors.onSurface,
                       ),
                     ),
                   ),
@@ -211,16 +213,15 @@ class MapFallback extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
               decoration: BoxDecoration(
-                color: AppColors.surface.withValues(alpha: 0.9),
-                borderRadius: BorderRadius.circular(7),
+                color: AppColors.surfaceContainerLowest.withValues(alpha: 0.92),
+                borderRadius: BorderRadius.circular(AppRadius.sm),
               ),
               child: Text(
                 '${center.latitude.toStringAsFixed(5)}, '
                 '${center.longitude.toStringAsFixed(5)}',
-                style: const TextStyle(
-                  color: AppColors.muted,
-                  fontSize: 10,
-                  fontWeight: FontWeight.w600,
+                style: AppTypography.codeData.copyWith(
+                  color: AppColors.onSurfaceVariant,
+                  fontSize: 11,
                 ),
               ),
             ),
@@ -231,15 +232,13 @@ class MapFallback extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: AppColors.ink.withValues(alpha: 0.72),
-                borderRadius: BorderRadius.circular(6),
+                color: AppColors.primary.withValues(alpha: 0.82),
+                borderRadius: BorderRadius.circular(AppRadius.sm),
               ),
-              child: const Text(
+              child: Text(
                 'PETA',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 9,
-                  fontWeight: FontWeight.w800,
+                style: AppTypography.labelSm.copyWith(
+                  color: AppColors.onPrimary,
                   letterSpacing: 1,
                 ),
               ),
@@ -257,7 +256,7 @@ class _MapPatternPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final gridPaint = Paint()
-      ..color = AppColors.toska.withValues(alpha: 0.08)
+      ..color = AppColors.secondary.withValues(alpha: 0.08)
       ..strokeWidth = 1;
     const gap = 34.0;
 

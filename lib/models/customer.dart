@@ -1,3 +1,15 @@
+/// Inspection state shown on the monitoring dashboard and map sheet.
+enum CustomerStatus {
+  pending('Belum Dikerjakan', 'Tertunda'),
+  completed('Selesai Diperiksa', 'Selesai'),
+  followUp('Perlu Tindak Lanjut', 'Tindak Lanjut');
+
+  const CustomerStatus(this.label, this.shortLabel);
+
+  final String label;
+  final String shortLabel;
+}
+
 /// A customer record shown to field officers.
 ///
 /// Values in this model mirror the customer section of the inspection form.
@@ -20,6 +32,7 @@ class Customer {
     required this.nomorMeter,
     required this.latitude,
     required this.longitude,
+    this.status = CustomerStatus.pending,
   });
 
   final String idpel;
@@ -38,4 +51,27 @@ class Customer {
   final String nomorMeter;
   final double latitude;
   final double longitude;
+  final CustomerStatus status;
+
+  Customer copyWith({CustomerStatus? status}) {
+    return Customer(
+      idpel: idpel,
+      thbl: thbl,
+      nama: nama,
+      alamat: alamat,
+      unitup: unitup,
+      unitupi: unitupi,
+      unitap: unitap,
+      daya: daya,
+      tarif: tarif,
+      kriteria: kriteria,
+      kodeGardu: kodeGardu,
+      noTiang: noTiang,
+      kddk: kddk,
+      nomorMeter: nomorMeter,
+      latitude: latitude,
+      longitude: longitude,
+      status: status ?? this.status,
+    );
+  }
 }

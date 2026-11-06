@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../theme/app_theme.dart';
-import 'form_section_card.dart';
 
 /// Camera-only photo capture required by the field inspection SOP.
 class PhotoFormField extends StatefulWidget {
@@ -95,15 +94,21 @@ class _PhotoFormFieldState extends State<PhotoFormField> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const RequiredFieldLabel(
-              label: 'FOTO',
-              required: true,
-              helper: 'Ambil langsung dari kamera. Galeri tidak tersedia.',
+            Text(
+              'Foto wajib diambil langsung melalui kamera aplikasi. '
+              'Akses galeri dinonaktifkan demi integritas & keaslian data '
+              'audit lapangan.',
+              style: AppTypography.bodySm.copyWith(
+                color: AppColors.onSurfaceVariant,
+                height: 1.45,
+              ),
             ),
             const SizedBox(height: 10),
             Material(
-              color: _photo == null ? AppColors.canvas : AppColors.ink,
-              borderRadius: BorderRadius.circular(14),
+              color: _photo == null
+                  ? AppColors.surfaceContainerLow
+                  : AppColors.primary,
+              borderRadius: BorderRadius.circular(AppRadius.md),
               clipBehavior: Clip.antiAlias,
               child: InkWell(
                 key: const ValueKey('photo-camera-field'),
@@ -119,15 +124,10 @@ class _PhotoFormFieldState extends State<PhotoFormField> {
             ),
             if (field.errorText != null) ...[
               const SizedBox(height: 7),
-              Padding(
-                padding: const EdgeInsets.only(left: 12),
-                child: Text(
-                  field.errorText!,
-                  style: const TextStyle(
-                    color: AppColors.danger,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                  ),
+              Text(
+                field.errorText!,
+                style: AppTypography.bodySm.copyWith(
+                  color: AppColors.error,
                 ),
               ),
             ],
@@ -146,46 +146,43 @@ class _CameraPrompt extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 154,
+      height: 160,
       width: double.infinity,
-      decoration: BoxDecoration(
-        border: Border.all(color: AppColors.border),
-        borderRadius: BorderRadius.circular(14),
-      ),
+      alignment: Alignment.center,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            width: 50,
-            height: 50,
+            width: 52,
+            height: 52,
             decoration: const BoxDecoration(
-              color: AppColors.toskaTint,
+              color: AppColors.surfaceContainerLowest,
               shape: BoxShape.circle,
             ),
             child: isLoading
                 ? const Padding(
-                    padding: EdgeInsets.all(14),
+                    padding: EdgeInsets.all(15),
                     child: CircularProgressIndicator(strokeWidth: 2.4),
                   )
                 : const Icon(
                     Icons.photo_camera_outlined,
-                    color: AppColors.toskaDark,
+                    color: AppColors.secondary,
                     size: 25,
                   ),
           ),
           const SizedBox(height: 10),
           Text(
             isLoading ? 'Membuka kamera...' : 'Ambil Foto',
-            style: const TextStyle(
-              color: AppColors.ink,
-              fontWeight: FontWeight.w700,
-              fontSize: 13.5,
+            style: AppTypography.labelLg.copyWith(
+              color: AppColors.onSurface,
             ),
           ),
           const SizedBox(height: 3),
-          const Text(
+          Text(
             'Kamera aktif • galeri dinonaktifkan',
-            style: TextStyle(color: AppColors.muted, fontSize: 11),
+            style: AppTypography.bodySm.copyWith(
+              color: AppColors.onSurfaceVariant,
+            ),
           ),
         ],
       ),
@@ -207,7 +204,7 @@ class _PhotoPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 180,
+      height: 190,
       width: double.infinity,
       child: Stack(
         fit: StackFit.expand,
@@ -218,18 +215,18 @@ class _PhotoPreview extends StatelessWidget {
               fit: BoxFit.cover,
               gaplessPlayback: true,
               errorBuilder: (context, error, stackTrace) => const ColoredBox(
-                color: AppColors.canvas,
+                color: AppColors.surfaceContainerLow,
                 child: Center(
                   child: Icon(
                     Icons.broken_image_outlined,
-                    color: AppColors.muted,
+                    color: AppColors.onSurfaceVariant,
                   ),
                 ),
               ),
             )
           else
             const ColoredBox(
-              color: AppColors.canvas,
+              color: AppColors.surfaceContainerLow,
               child: Center(child: CircularProgressIndicator()),
             ),
           const DecoratedBox(
@@ -255,23 +252,21 @@ class _PhotoPreview extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.92),
-                    borderRadius: BorderRadius.circular(7),
+                    borderRadius: BorderRadius.circular(AppRadius.sm),
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.photo_camera,
                         size: 13,
-                        color: AppColors.toskaDark,
+                        color: AppColors.secondary,
                       ),
-                      SizedBox(width: 5),
+                      const SizedBox(width: 5),
                       Text(
                         'Ganti foto',
-                        style: TextStyle(
-                          color: AppColors.ink,
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700,
+                        style: AppTypography.labelSm.copyWith(
+                          color: AppColors.primary,
                         ),
                       ),
                     ],
@@ -288,8 +283,8 @@ class _PhotoPreview extends StatelessWidget {
               onPressed: onRemove,
               icon: const Icon(Icons.close, size: 19),
               style: IconButton.styleFrom(
-                backgroundColor: Colors.black.withValues(alpha: 0.55),
-                foregroundColor: Colors.white,
+                backgroundColor: AppColors.primary.withValues(alpha: 0.72),
+                foregroundColor: AppColors.onPrimary,
                 minimumSize: const Size(36, 36),
                 padding: EdgeInsets.zero,
               ),

@@ -22,6 +22,7 @@ const List<Customer> mockCustomers = [
     nomorMeter: 'MTR-8842910',
     latitude: -6.288574,
     longitude: 106.799318,
+    status: CustomerStatus.pending,
   ),
   Customer(
     idpel: '512300918465',
@@ -40,6 +41,7 @@ const List<Customer> mockCustomers = [
     nomorMeter: 'MTR-7730154',
     latitude: -6.265487,
     longitude: 106.782951,
+    status: CustomerStatus.completed,
   ),
   Customer(
     idpel: '512300733820',
@@ -59,6 +61,7 @@ const List<Customer> mockCustomers = [
     nomorMeter: 'MTR-6621947',
     latitude: -6.196648,
     longitude: 106.771234,
+    status: CustomerStatus.pending,
   ),
   Customer(
     idpel: '512300664102',
@@ -77,6 +80,7 @@ const List<Customer> mockCustomers = [
     nomorMeter: 'MTR-5510872',
     latitude: -6.166743,
     longitude: 106.790826,
+    status: CustomerStatus.completed,
   ),
   Customer(
     idpel: '512300552781',
@@ -95,6 +99,7 @@ const List<Customer> mockCustomers = [
     nomorMeter: 'MTR-4402136',
     latitude: -6.179558,
     longitude: 106.863538,
+    status: CustomerStatus.pending,
   ),
   Customer(
     idpel: '512300441970',
@@ -113,6 +118,7 @@ const List<Customer> mockCustomers = [
     nomorMeter: 'MTR-3399245',
     latitude: -6.194421,
     longitude: 106.881614,
+    status: CustomerStatus.followUp,
   ),
   Customer(
     idpel: '512300337619',
@@ -131,6 +137,7 @@ const List<Customer> mockCustomers = [
     nomorMeter: 'MTR-2288371',
     latitude: -6.205132,
     longitude: 106.868907,
+    status: CustomerStatus.pending,
   ),
   Customer(
     idpel: '512300226508',
@@ -149,5 +156,6 @@ const List<Customer> mockCustomers = [
     nomorMeter: 'MTR-1177403',
     latitude: -6.241536,
     longitude: 106.794871,
+    status: CustomerStatus.completed,
   ),
 ];
